@@ -10,14 +10,15 @@ export const FeedbackOptions = ({ options, onLeaveFeedback }) => {
             justifyContent="space-around"
             mb={5}
         >
-            {options.map((option) => (
+            {options.map(({id, title}) => (
                 
                 <Button
-                    key={option}
+                    key={id}
                     type="button"
+                    name={id}
                     onClick={onLeaveFeedback}
                 >
-                    {option}
+                    {title}
                 </Button>
             ))}
         </Box>

@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import { Feedback } from "./Feedback";
+import React from 'react';
 import { Box } from "./Box";
 import { useState } from 'react';
-import { Button } from './Feedback/FeedbackOptions/FeedbackOptions.styled';
-import { TableTd } from './Feedback/Statistics/Statistics.styled';
+import { FeedbackOptions } from './FeedbackOptions';
+import { Section } from './Section';
+import { Notification } from './Notification';
+import { Statistics } from './Statistics';
 
-const options = [
+const btnOptions = [
   { id: 'good', title: 'Good' },
   { id: 'neutral', title: 'Neutral' },
   { id: 'bad', title: 'Bad' }];
@@ -16,18 +17,14 @@ export const App = () => {
     neutral: 0,
     bad: 0,
   });
-  // const statisticsResults = [
-  //       { lable: 'Good:', number: {status.good} },
-  //       { lable: 'Neutral:', number: neutral },
-  //       { lable: 'Bad:', number: bad },
-        // { lable: 'Total:', number: total },
-        // { lable: 'Positive feedback:', number: positivePercentage },
-// ];
 
   const handleChange = e => {
     const { name } = e.target;
     setStatus(prev => ({ ...prev, [name]: prev[name] + 1 }));
   };
+
+  const totalFeedback = status.good + status.bad + status.neutral;
+  const positiveFeedbackPersentage = status.good ? Math.round(status.good * 100 / totalFeedback) + '%' : '0%';
 
   return (
     <Box
@@ -40,49 +37,23 @@ export const App = () => {
       mx="auto"
       boxShadow="containerShadow"
     >
-      {/* <Feedback
-          good={status.good}
-          neutral={status.neutral}
-          bad={status.bad}
-          // total={totalFeedback}
-          // positivePercentage={positiveFeedback}
-          options={options}
-          // countFeedback={this.countFeedback}
-        /> */}
-      <Box
-        display="flex"
-        justifyContent="space-around"
-        mb={5}
-      >
-        {options.map((opt) => (
-                
-          <Button
-            key={opt.id}
-            type="button"
-            name={opt.id}
-            onClick={handleChange}
-          >
-            {opt.title}
-          </Button>
-          
-        ))}
-      </Box>
-      <Box
-            as="table"
-            width="100%">
-            <tbody>
-                {options.map((opt) => (
-                    <tr
-                        key={opt.id}>
-                        <TableTd>{opt.title}</TableTd>
-                        <TableTd>{status[opt.id]}</TableTd>
-                    </tr>
-                ))}
-            </tbody>
-        </Box>
+      <Section title="Please leave feedback">
+        <FeedbackOptions
+          options={btnOptions}
+          onLeaveFeedback={handleChange} />
+      </Section>
+      <Section title="Statistics">
+        {totalFeedback === 0
+          ? (<Notification message="There is no feedback" />)
+          : (<Statistics
+            good={status.good}
+            neutral={status.neutral}
+            bad={status.bad}
+            total={totalFeedback}
+            positivePercentage={positiveFeedbackPersentage} />)}
+      </Section>
     </Box>
   );
-
 }
 
 // export class App extends Component {
